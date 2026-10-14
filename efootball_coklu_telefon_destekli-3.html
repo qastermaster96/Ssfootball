@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>eFootball Ultimate & Mini Games Pro v12</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Roboto,sans-serif;user-select:none;-webkit-tap-highlight-color:transparent}button,select,input,textarea{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}button:disabled{pointer-events:none;opacity:.55}.btn-buy{min-height:42px;position:relative;z-index:5}body{background:#0b0e14;color:#fff;text-align:center;padding-bottom:40px}.top-bar{display:flex;justify-content:space-between;align-items:center;background:#161b22;padding:12px 20px;border-bottom:2px solid #00ff88;position:sticky;top:0;z-index:100}.coin-box,.power-box{background:#21262d;padding:6px 14px;border-radius:20px;font-weight:bold}.coin-box{color:#ffd700;border:1px solid #ffd700}.power-box{color:#00ff88;border:1px solid #00ff88}nav{display:flex;justify-content:center;gap:6px;background:#0d1117;padding:10px;flex-wrap:wrap}nav button{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:8px 14px;border-radius:8px;cursor:pointer;touch-action:manipulation;font-weight:bold;font-size:12px}nav button.active{background:#238636;color:#fff}.screen{display:none;padding:15px;max-width:900px;margin:0 auto}.screen.active{display:block}.card{width:90px;height:125px;border-radius:10px;background:linear-gradient(135deg,#1f242d,#0d1117);border:2px solid #484f58;display:inline-flex;flex-direction:column;justify-content:space-between;padding:5px;margin:4px;box-shadow:0 4px 10px #0009;cursor:pointer;touch-action:manipulation;transition:transform .2s}.card:active{transform:scale(.96)}.card.special{background:linear-gradient(135deg,#ffd700,#ff8c00);border-color:#fff;color:#000;font-weight:bold}.card-ovr{font-size:14px;font-weight:900}.card-name{font-size:9px;text-align:center;word-break:break-word}.card-pos{font-size:8px;font-weight:bold}.card-avatar{width:30px;height:30px;border-radius:50%;background:#333;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid #fff}.pitch{background:radial-gradient(circle,#2e7d32,#1b5e20);border:3px solid #fff;border-radius:15px;padding:15px;min-height:420px;display:flex;flex-direction:column;justify-content:space-around;margin-bottom:20px;box-shadow:inset 0 0 20px #000c}.pitch-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.slot{width:75px;min-height:105px;border:2px dashed #ffffff66;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0005;cursor:pointer;position:relative;font-size:12px;touch-action:manipulation}.slot.selected{border-color:#00ff88;background:#00ff8833}.btn-remove-slot{position:absolute;top:-5px;right:-5px;background:#ff4757;color:white;border:0;border-radius:50%;width:20px;height:20px;font-size:12px;z-index:10}.bench-zone{background:#161b22;padding:12px;border-radius:10px;border:1px solid #30363d;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.pack-card{background:#161b22;border-radius:12px;padding:15px;margin:12px auto;border:1px solid #30363d;max-width:500px;text-align:left}.pack-title{color:#58a6ff;font-size:18px;margin-bottom:8px;font-weight:bold}.btn-buy{background:#238636;color:white;border:0;padding:10px 16px;margin:5px 5px 0 0;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px}.modal{display:none;position:fixed;inset:0;background:#000e;z-index:1000;justify-content:center;align-items:center;flex-direction:column;padding:20px}.modal-cards-container{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-height:70vh;overflow-y:auto;margin-top:15px;padding:10px}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px}th,td{padding:8px;border:1px solid #30363d;text-align:center}.log-box{background:#0d1117;color:#7ee787;padding:10px;height:150px;overflow-y:auto;text-align:left;font-family:monospace;border-radius:5px;margin-top:10px;font-size:12px;border:1px solid #30363d;line-height:1.5}.filter-bar{display:flex;gap:5px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}#snakeCanvas{background:#111;border:2px solid #30363d;border-radius:8px;display:block;margin:15px auto;touch-action:none;width:min(300px,90vw);height:min(300px,90vw)}
+</style></head><body>
+<div class="top-bar"><div class="power-box">Güç: <span id="teamPower">0</span> · Oyuncu ID: <span id="playerId">...</span></div><div class="coin-box">Coin: <span id="coinCount">0</span> 🪙</div></div>
+<nav><button onclick="showScreen('squad',this)" class="active">Kadro (4-3-2-2)</button><button onclick="showScreen('snakeGame',this)">🐍 Elma / Yılan</button><button onclick="showScreen('packs',this)">Paketler</button><button onclick="showScreen('league',this)">Lig Sezonu</button><button onclick="showScreen('quests',this)">Görevler</button><button onclick="showScreen('sell',this)">Kart Satış</button><button onclick="showScreen('store',this)">Mağaza</button><button onclick="showScreen('store',this);document.getElementById('purchaseItem').scrollIntoView({behavior:'smooth',block:'center'})">Satın Alma Talebi</button><button onclick="showScreen('store',this);document.getElementById('adminPassword').scrollIntoView({behavior:'smooth',block:'center'})">🔒 Yönetici</button></nav>
+<div class="pack-card" id="onlineChallengeCard" style="margin:10px 0;text-align:left;border:1px solid #2ea043;background:#111820">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+    <b style="color:#3fb950">🟢 Oyunda olanlar: <span id="onlineCount">—</span></b>
+    <span style="font-size:12px;color:#9da7b3">Oyuncu ID: <b id="challengeMyId" style="color:#ffd700"></b></span>
+  </div>
+  <h3 style="margin:12px 0 6px">⚔️ Maç İsteği Gönder</h3>
+  <p style="font-size:12px;color:#9da7b3;margin:4px 0 8px">Arkadaşının Oyuncu ID'sini girip maç daveti yolla. Arkadaşın da aynı çevrim içi oyunu açmış olmalı.</p>
+  <input id="challengeTargetId" maxlength="24" placeholder="Arkadaşının ID'si (EF-XXXX-XXXX)" style="box-sizing:border-box;display:block;width:100%;margin:8px 0;padding:10px;background:#21262d;color:#fff;border:1px solid #30363d;border-radius:6px">
+  <button class="btn-buy" onclick="sendChallengeRequest()">📨 Maç İsteği Gönder</button>
+  <p id="challengeMessage" style="margin:8px 0;color:#9da7b3;font-size:13px"></p>
+  <div style="margin-top:12px"><b>📩 Gelen Maç İstekleri</b><div id="incomingChallenges" style="margin-top:8px;color:#9da7b3;font-size:13px">Sunucuya bağlanılıyor…</div></div>
+</div>
+<div id="squad" class="screen active"><div style="background:#161b22;padding:12px;border-radius:8px;margin-bottom:10px;border:1px solid #30363d;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><label style="font-size:12px;color:#8b949e;display:block">Menajer Kartı (Diziliş: 4-3-2-2):</label><select id="managerSelect" onchange="changeManager()" style="background:#21262d;color:#fff;padding:6px;border-radius:6px;border:1px solid #30363d;margin-top:4px;font-weight:bold"><option value="Pep Guardiola">👔 Pep Guardiola [+10 OVR Bonus]</option><option value="Carlo Ancelotti">👔 Carlo Ancelotti [+8 OVR Bonus]</option><option value="Jurgen Klopp">👔 Jurgen Klopp [+9 OVR Bonus]</option><option value="Ultimate Boss" id="bossManagerOption" disabled>🔒 Ultimate Master (700 Elma Gerekli)</option></select></div><div id="managerBadge" style="background:#21262d;padding:8px 12px;border-radius:8px;border:1px solid #ffd700;font-size:12px;color:#ffd700;font-weight:bold">Bonus: +10</div></div><div class="pitch"><div class="pitch-row" id="row-FWD"></div><div class="pitch-row" id="row-AMF"></div><div class="pitch-row" id="row-MID"></div><div class="pitch-row" id="row-DEF"></div><div class="pitch-row" id="row-GK"></div></div><h3 style="margin-bottom:8px;font-size:15px">Yedek Kulübesi</h3><div class="filter-bar"><button class="btn-buy" onclick="filterBench('ALL')">Tümü</button><button class="btn-buy" onclick="filterBench('SNT')">SNT</button><button class="btn-buy" onclick="filterBench('OS')">OS</button><button class="btn-buy" onclick="filterBench('DEF')">DEF</button><button class="btn-buy" onclick="filterBench('KL')">KL</button><button class="btn-buy" style="background:#1f6beb" onclick="sortBenchOVR()">OVR Sırala</button><button class="btn-buy" style="background:#8a2be2" onclick="clearSelection()">Seçimi İptal</button><button class="btn-buy" style="background:#c0392b" onclick="resetSquad()">🧹 Kadroyu Sıfırla</button></div><div class="bench-zone" id="benchList"></div></div>
+<div id="snakeGame" class="screen"><h2>🐍 Yılan & Elma Oyunu</h2><p style="font-size:12px;color:#8b949e;margin:5px">Elma yiyerek skor topla. 700 Elma olunca Ultimate Menajer kalıcı olarak açılır.</p><p style="font-size:14px;color:#ffd700;font-weight:bold">Toplanan Elma: <span id="appleCount">0</span> / 700</p><canvas id="snakeCanvas" width="300" height="300"></canvas><p style="font-size:12px;color:#8b949e">Yön değiştirmek için oyun alanında parmağını kaydır.</p></div>
+<div id="packs" class="screen"><h2>Özel Paketler</h2><p style="color:#ffd700;margin:8px 0">Paketlerin bitmesine: <b id="packTimer">6 gün 19 saat 00 dk 00 sn</b></p><div class="pack-card"><div class="pack-title">🇧🇷 Brazil Paket</div><button class="btn-buy" onclick="openPack('brazil',1)">Tekli Aç (100 Coin)</button><button class="btn-buy" onclick="openPack('brazil',10)">10'lu Aç (900 Coin)</button><div id="brazilCollection" style="margin-top:12px"></div></div><div class="pack-card"><div class="pack-title">🏆 Dünya Kupası Efsaneleri</div><button class="btn-buy" onclick="openPack('worldcup',1)">Tekli Aç (100 Coin)</button><button class="btn-buy" onclick="openPack('worldcup',10)">10'lu Aç (900 Coin)</button><div id="worldcupCollection" style="margin-top:12px"></div></div><div class="pack-card"><div class="pack-title">🌟 Efsaneler Paketi</div><button class="btn-buy" onclick="openPack('legends',1)">Tekli Aç (100 Coin)</button><button class="btn-buy" onclick="openPack('legends',10)">10'lu Aç (900 Coin)</button><div id="legendsCollection" style="margin-top:12px"></div></div><div class="pack-card"><div class="pack-title">👔 Menajer Paketi</div><p style="color:#9da7b3;font-size:13px">Rastgele menajer çıkar; çıkan menajeri kadro ekranından seçebilirsin.</p><button class="btn-buy" onclick="openManagerPack()">Menajer Çıkar (100 Coin)</button><div id="managerCollection" style="margin-top:12px"></div></div></div>
+<div id="league" class="screen"><h2>Super League Sezonu</h2><button class="btn-buy" onclick="playLeagueMatch()" style="background:#1f6beb;width:100%;margin-bottom:10px">Lig Maçını Oyna</button><div class="log-box" id="leagueLog">Maç bekleniyor...</div></div><div id="quests" class="screen"><h2>Görevler</h2><p style="color:#8b949e;margin:8px">Görevleri tamamlayıp ödül kazan.</p><div id="questList"></div></div><div id="sell" class="screen"><h2>Kart Satış</h2><div class="bench-zone" id="sellList"></div></div><div id="store" class="screen"><h2>Mağaza</h2>
+<p style="margin:10px;color:#8b949e">Oyuncu ID'n: <b id="storePlayerId" style="color:#ffd700"></b>. Satın alma talebinde bu ID görünür.</p>
+<p style="margin:10px;color:#8b949e">Günlük ödül: 1000 Coin</p><button class="btn-buy" id="dailyBtn" onclick="claimDaily()">1000 Coin Al</button><p id="dailyStatus" style="margin-top:10px;color:#8b949e"></p>
+<hr style="margin:18px 0;border-color:#30363d">
+<h3>🪙 Coin ve Oyuncu Satın Alma Talebi</h3>
+<p style="color:#9da7b3;font-size:13px;margin:8px">Kod bir ödeme değeridir; yalnızca bu alışveriş için vermek istiyorsan gir. Talepler sunucu üzerinden yöneticiye gider. Yönetici kabul edince seçtiğin ödül bu Oyuncu ID’sine bağlı oyuna gönderilir.</p>
+<div class="pack-card"><label for="purchaseItem">Ürün seç</label><select id="purchaseItem" style="display:block;width:100%;margin:8px 0;padding:10px;background:#21262d;color:#fff;border:1px solid #30363d;border-radius:6px">
+<option value="100 Coin|3 TL">100 Coin — 3 TL</option>
+<option value="400 Coin|40 TL">400 Coin — 40 TL</option>
+<option value="1000 Coin|60 TL">1000 Coin — 60 TL</option>
+<option value="3000 Coin|100 TL">3000 Coin — 100 TL</option>
+<option value="10000 Coin|125 TL">10000 Coin — 125 TL</option>
+<option value="106 Oliver Kahn|80 TL">106 Oliver Kahn — 80 TL</option>
+</select>
+<label for="playCode">Google Play kodu (zorunlu)</label>
+<input id="playCode" type="text" maxlength="100" required autocomplete="off" placeholder="Google Play kodunu yaz" style="display:block;width:100%;margin:8px 0;padding:10px;background:#21262d;color:#fff;border:1px solid #30363d;border-radius:6px">
+<button class="btn-buy" onclick="createPurchaseRequest()">Satın Alma Talebi Oluştur</button>
+<p id="purchaseMessage" style="margin-top:10px;color:#9da7b3"></p></div>
+<div class="pack-card"><div class="pack-title">🔐 Yönetici Paneli</div><p style="color:#9da7b3;font-size:13px">Talepleri görmek için yönetici şifresini gir.</p><input id="adminPassword" type="password" placeholder="Yönetici şifresi" style="display:block;width:100%;margin:8px 0;padding:10px;background:#21262d;color:#fff;border:1px solid #30363d;border-radius:6px"><button class="btn-buy" onclick="openAdminPanel()">Panele Gir</button><div id="adminPanel" style="display:none;margin-top:12px"></div></div>
+</div>
+<div class="modal" id="packModal"><h2 style="color:#ffd700">Çıkan Oyuncular:</h2><div class="modal-cards-container" id="modalCardsContainer"></div><button class="btn-buy" onclick="closePackModal()" style="margin-top:20px">Tamam</button></div>
+<script>
+let gameState={coins:0,totalApples:0,manager:'Pep Guardiola',leagueMatch:1,leaguePoints:0,nextLeagueMatchAt:0,dailyClaimAt:0,packExpiryAt:0,packCollections:{brazil:[],worldcup:[],legends:[]},managerCollection:[],questResetAt:0,questClaims:[],questSellCount:0,questManagerPackCount:0,squad:{FWD1:null,FWD2:null,AMF1:null,AMF2:null,MID1:null,MID2:null,MID3:null,DEF1:null,DEF2:null,DEF3:null,DEF4:null,GK:null},bench:[]};
+function getOrCreatePlayerId(){
+  const key='eFootballSim_playerId_v1';
+  let id=localStorage.getItem(key);
+  if(!id){
+    id='EF-'+Math.random().toString(36).slice(2,6).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+    localStorage.setItem(key,id);
+  }
+  const el=document.getElementById('playerId');
+  if(el)el.textContent=id;
+  return id;
+}
+getOrCreatePlayerId();
+function loadGame(){
+  const emptySquad={FWD1:null,FWD2:null,AMF1:null,AMF2:null,MID1:null,MID2:null,MID3:null,DEF1:null,DEF2:null,DEF3:null,DEF4:null,GK:null};
+  let saved=null;
+  try {
+    saved=localStorage.getItem('eFootballSim_v12');
+    if(saved) {
+      const parsed=JSON.parse(saved);
+      const hasPlayers=(parsed.bench&&parsed.bench.length)||Object.values(parsed.squad||{}).some(Boolean);
+      if(!hasPlayers) {
+        for(const key of ['eFootballSim_v11','eFootballSim_v10','eFootballSim_v9','eFootballSim_v8']) {
+          const old=localStorage.getItem(key);
+          if(old) {
+            try {
+              const oldData=JSON.parse(old);
+              if((oldData.bench&&oldData.bench.length)||Object.values(oldData.squad||{}).some(Boolean)) { saved=old; break; }
+            } catch(e) {}
+          }
+        }
+      }
+    } else {
+      for(const key of ['eFootballSim_v11','eFootballSim_v10','eFootballSim_v9','eFootballSim_v8']) {
+        const old=localStorage.getItem(key);
+        if(old) {
+          try {
+            const oldData=JSON.parse(old);
+            if((oldData.bench&&oldData.bench.length)||Object.values(oldData.squad||{}).some(Boolean)) { saved=old; break; }
+          } catch(e) {}
+        }
+      }
+    }
+    if(saved) gameState={...gameState,...JSON.parse(saved)};
+  } catch(e) {}
+  gameState.squad={...emptySquad,...(gameState.squad||{})};
+  gameState.bench=Array.isArray(gameState.bench)?gameState.bench:[];
+  const hasSquad=Object.values(gameState.squad).some(Boolean);
+  if(!hasSquad && gameState.bench.length===0) {
+    gameState.squad={
+      FWD1:{id:'starter-haaland',name:'Haaland',pos:'SNT',ovr:82,level:1,special:false},
+      FWD2:{id:'starter-mbappe',name:'Mbappé',pos:'SNT',ovr:84,level:1,special:false},
+      AMF1:{id:'starter-messi',name:'Messi',pos:'OS',ovr:85,level:1,special:false},
+      AMF2:{id:'starter-foden',name:'Foden',pos:'OS',ovr:79,level:1,special:false},
+      MID1:{id:'starter-bellingham',name:'Bellingham',pos:'OS',ovr:82,level:1,special:false},
+      MID2:{id:'starter-rodri',name:'Rodri',pos:'OS',ovr:81,level:1,special:false},
+      MID3:{id:'starter-pedri',name:'Pedri',pos:'OS',ovr:78,level:1,special:false},
+      DEF1:{id:'starter-vvd',name:'Van Dijk',pos:'DEF',ovr:83,level:1,special:false},
+      DEF2:{id:'starter-dias',name:'Rúben Dias',pos:'DEF',ovr:80,level:1,special:false},
+      DEF3:{id:'starter-hakimi',name:'Hakimi',pos:'DEF',ovr:79,level:1,special:false},
+      DEF4:{id:'starter-theo',name:'Theo Hernández',pos:'DEF',ovr:79,level:1,special:false},
+      GK:{id:'starter-courtois',name:'Courtois',pos:'KL',ovr:83,level:1,special:false}
+    };
+    gameState.bench=[
+      {id:'starter-saka',name:'Saka',pos:'SNT',ovr:78,level:1,special:false},
+      {id:'starter-gavi',name:'Gavi',pos:'OS',ovr:76,level:1,special:false},
+      {id:'starter-saliba',name:'Saliba',pos:'DEF',ovr:78,level:1,special:false},
+      {id:'starter-alisson',name:'Alisson',pos:'KL',ovr:81,level:1,special:false}
+    ];
+  }
+}function saveGame(){try{localStorage.setItem('eFootballSim_v12',JSON.stringify(gameState))}catch(e){}}
+loadGame();gameState.nextLeagueMatchAt=gameState.nextLeagueMatchAt||0;gameState.packCollections=gameState.packCollections||{brazil:[],worldcup:[],legends:[]};gameState.packCollections.brazil=gameState.packCollections.brazil||[];gameState.packCollections.worldcup=gameState.packCollections.worldcup||[];gameState.packCollections.legends=gameState.packCollections.legends||[];gameState.managerCollection=gameState.managerCollection||[];gameState.questClaims=gameState.questClaims||[];gameState.questResetAt=gameState.questResetAt||Date.now();if(localStorage.getItem('eFootballPackTimerReset_v2')!=='1'){gameState.packExpiryAt=Date.now()+6*24*60*60*1000+19*60*60*1000;localStorage.setItem('eFootballPackTimerReset_v2','1')}if(!gameState.packExpiryAt)gameState.packExpiryAt=Date.now()+6*24*60*60*1000+19*60*60*1000;const basePlayers=[['Müller','SNT'],['Goretzka','OS'],['Silva','OS'],['Pedri','OS'],['Gavi','OS'],['Kubo','SNT'],['Saka','SNT'],['Rice','OS'],['Bellingham','OS'],['Modrić','OS'],['Van Dijk','DEF'],['Rúben Dias','DEF'],['Hakimi','DEF'],['Theo Hernández','DEF'],['Alisson','KL'],['Courtois','KL'],['Ederson','KL'],['Haaland','SNT'],['Mbappé','SNT'],['Messi','SNT'],['Neymar','SNT'],['Kane','SNT'],['Griezmann','SNT'],['Foden','OS'],['Valverde','OS'],['Rodri','OS'],['Saliba','DEF'],['Marquinhos','DEF'],['Ter Stegen','KL'],['Oblak','KL']];
+function makePool(prefix,specials){let pool=specials.map(x=>({name:x[0],pos:x[1],ovr:x[2],special:true}));let i=1;while(pool.length<150){let b=basePlayers[(i-1)%basePlayers.length];pool.push({name:prefix+' Standart '+String(i).padStart(3,'0'),pos:b[1],special:false});i++}return pool}
+const brazilPool=makePool('Brazil',[['Neymar','SNT',106],['Ronaldo Nazário','SNT',108],['Ronaldinho','OS',105]]);
+const worldCupPool=makePool('Dünya Kupası',[['Pelé','SNT',108],['Lionel Messi','SNT',106],['Kylian Mbappé','SNT',105]]);
+const legendsPool=makePool('Efsane',[['Eric Cantona','SNT',104],['Carles Puyol','DEF',108],['Cafu','DEF',105]]);
+const packPools={brazil:brazilPool,worldcup:worldCupPool,legends:legendsPool};const managerPool=[{name:'Zinedine Zidane',bonus:12},{name:'José Mourinho',bonus:11},{name:'Xabi Alonso',bonus:10},{name:'Mikel Arteta',bonus:9},{name:'Luis Enrique',bonus:10},{name:'Sir Alex Ferguson',bonus:13}];const playerPool=[...basePlayers.map(x=>({name:x[0],pos:x[1]})),...brazilPool.slice(0,3).map(x=>({name:x.name,pos:x.pos})),...worldCupPool.slice(0,3).map(x=>({name:x.name,pos:x.pos})),...legendsPool.slice(0,3).map(x=>({name:x.name,pos:x.pos}))];let selectedSlotKey=null,selectedBenchIndex=null,currentFilter='ALL';const positionByName=Object.fromEntries(playerPool.map(p=>[p.name,p.pos]));function normalizePlayerPositions(){gameState.bench.forEach(p=>{if(positionByName[p.name])p.pos=positionByName[p.name]});Object.keys(gameState.squad).forEach(k=>{let p=gameState.squad[k];if(p&&positionByName[p.name])p.pos=positionByName[p.name]})}normalizePlayerPositions();
+function showScreen(id,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn)btn.classList.add('active');if(id==='sell')renderSellList()}
+function clearSelection(){selectedSlotKey=null;selectedBenchIndex=null;renderPitch()}function changeManager(){gameState.manager=document.getElementById('managerSelect').value;renderPitch()}function managerBonus(name){if(name==='Pep Guardiola')return 10;if(name==='Carlo Ancelotti')return 8;if(name==='Jurgen Klopp')return 9;if(name==='Ultimate Boss')return 15;let m=managerPool.find(x=>x.name===name);return m?m.bonus:8}function renderManagerOptions(){let sel=document.getElementById('managerSelect'),current=gameState.manager;sel.innerHTML='<option value="Pep Guardiola">👔 Pep Guardiola [+10 OVR Bonus]</option><option value="Carlo Ancelotti">👔 Carlo Ancelotti [+8 OVR Bonus]</option><option value="Jurgen Klopp">👔 Jurgen Klopp [+9 OVR Bonus]</option>'+managerPool.filter(m=>gameState.managerCollection.includes(m.name)).map(m=>'<option value="'+m.name+'">👔 '+m.name+' [+ '+m.bonus+' OVR Bonus]</option>').join('')+'<option value="Ultimate Boss" id="bossManagerOption" '+(gameState.totalApples>=700?'':'disabled')+'>👔 Ultimate Master [+15 OVR Bonus]</option>';if([...sel.options].some(o=>o.value===current))sel.value=current;else{gameState.manager='Pep Guardiola';sel.value=gameState.manager}}function openManagerPack(){if(Date.now()>=gameState.packExpiryAt){alert('Paket etkinliği sona erdi!');return}if(gameState.coins<100){alert('Yetersiz Coin!');return}gameState.coins-=100;gameState.questManagerPackCount=(gameState.questManagerPackCount||0)+1;let m=managerPool[Math.floor(Math.random()*managerPool.length)];if(!gameState.managerCollection.includes(m.name))gameState.managerCollection.push(m.name);renderManagerOptions();renderManagerCollection();let c=document.getElementById('modalCardsContainer');c.innerHTML='<div class="card special" style="width:140px;height:175px"><span class="card-ovr">+'+m.bonus+'</span><div class="card-avatar">👔</div><div class="card-name" style="font-size:12px">'+m.name+'</div><span class="card-pos">MENAJER</span></div>';document.querySelector('#packModal h2').textContent='Çıkan Menajer!';document.getElementById('packModal').style.display='flex';updateCoins();renderPitch();saveGame()}function renderManagerCollection(){let el=document.getElementById('managerCollection');if(!el)return;el.innerHTML='<b>Menajer Koleksiyonu ('+gameState.managerCollection.length+' / '+managerPool.length+')</b><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:8px">'+managerPool.map(m=>{let got=gameState.managerCollection.includes(m.name);return '<div style="padding:8px;background:'+(got?'#777':'#252a32')+';color:'+(got?'#ddd':'#9da7b3')+';border-radius:6px;filter:'+(got?'grayscale(1)':'none')+'">'+(got?'✓ ':'🔒 ')+m.name+' <b>+'+m.bonus+'</b></div>'}).join('')+'</div>'}
+function calculatePower(){let total=0,count=0;for(let slot in gameState.squad){let p=gameState.squad[slot];if(p){let o=p.ovr+(p.level-1),req=slot.includes('FWD')?'SNT':slot.includes('AMF')?['SNT','OS']:slot.includes('MID')?'OS':slot.includes('DEF')?'DEF':'KL';if(!(Array.isArray(req)?req.includes(p.pos):p.pos===req))o-=15;total+=Math.max(30,o);count++}}let bonus=managerBonus(gameState.manager);document.getElementById('teamPower').textContent=count?Math.round(total*1.1+bonus):0;document.getElementById('managerBadge').textContent='Bonus: +'+bonus}
+const slotConfig=[{id:'row-FWD',slots:[{key:'FWD1',pos:'SNT'},{key:'FWD2',pos:'SNT'}]},{id:'row-AMF',slots:[{key:'AMF1',pos:'OS'},{key:'AMF2',pos:'OS'}]},{id:'row-MID',slots:[{key:'MID1',pos:'OS'},{key:'MID2',pos:'OS'},{key:'MID3',pos:'OS'}]},{id:'row-DEF',slots:[{key:'DEF1',pos:'DEF'},{key:'DEF2',pos:'DEF'},{key:'DEF3',pos:'DEF'},{key:'DEF4',pos:'DEF'}]},{id:'row-GK',slots:[{key:'GK',pos:'KL'}]}];
+function renderPitch(){renderManagerOptions();document.getElementById('managerSelect').value=gameState.manager;slotConfig.forEach(r=>{let el=document.getElementById(r.id);el.innerHTML='';r.slots.forEach(s=>{let p=gameState.squad[s.key],d=document.createElement('div');d.className='slot '+(selectedSlotKey===s.key?'selected':'');d.onclick=()=>handleSlotClick(s.key);if(p){d.innerHTML='<button class="btn-remove-slot" aria-label="Oyuncuyu çıkar">×</button>'+createCardHTML(p);d.querySelector('.btn-remove-slot').onclick=e=>{e.stopPropagation();removeFromSquad(s.key)}}else d.innerHTML=s.pos+'<br>＋ Seç';el.appendChild(d)})});renderBench();calculatePower();saveGame()}
+function createCardHTML(p){return `<div class="card ${p.special?'special':''}"><span class="card-ovr">${p.ovr+p.level-1}</span><div class="card-avatar">⚽</div><div class="card-name">${p.name}</div><span class="card-pos">${p.pos}</span></div>`}
+function renderBench(){let el=document.getElementById('benchList');el.innerHTML='';gameState.bench.map((p,i)=>({p,i})).filter(x=>currentFilter==='ALL'||x.p.pos===currentFilter).forEach(({p,i})=>{let d=document.createElement('div');d.innerHTML=createCardHTML(p);if(selectedBenchIndex===i)d.firstElementChild.style.borderColor='#00ff88';d.onclick=()=>selectBenchCard(i);el.appendChild(d)})}function filterBench(p){currentFilter=p;renderBench()}function sortBenchOVR(){gameState.bench.sort((a,b)=>(b.ovr+b.level)-(a.ovr+a.level));renderPitch()}
+function positionAllowed(key,p){if(key.startsWith('FWD'))return p.pos==='SNT';if(key.startsWith('AMF'))return p.pos==='OS'||p.pos==='SNT';if(key.startsWith('MID'))return p.pos==='OS';if(key.startsWith('DEF'))return p.pos==='DEF';return p.pos==='KL'}function handleSlotClick(key){if(selectedBenchIndex!==null){let p=gameState.bench[selectedBenchIndex];if(!positionAllowed(key,p)){alert('Bu oyuncu bu bölgede oynayamaz! Oyuncu pozisyonu: '+p.pos);return}let old=gameState.squad[key];gameState.squad[key]=p;if(old)gameState.bench[selectedBenchIndex]=old;else gameState.bench.splice(selectedBenchIndex,1);selectedBenchIndex=null;selectedSlotKey=null;renderPitch()}else{selectedSlotKey=selectedSlotKey===key?null:key;renderPitch()}}
+function selectBenchCard(i){if(selectedSlotKey!==null){let p=gameState.bench[i];if(!positionAllowed(selectedSlotKey,p)){alert('Bu oyuncu bu bölgede oynayamaz! Oyuncu pozisyonu: '+p.pos);return}let old=gameState.squad[selectedSlotKey];gameState.squad[selectedSlotKey]=p;if(old)gameState.bench[i]=old;else gameState.bench.splice(i,1);selectedSlotKey=null;selectedBenchIndex=null;renderPitch()}else{selectedBenchIndex=selectedBenchIndex===i?null:i;renderBench()}}
+function removeFromSquad(k){if(gameState.squad[k]){gameState.bench.push(gameState.squad[k]);gameState.squad[k]=null;renderPitch()}}
+function openPack(type,count){if(Date.now()>=gameState.packExpiryAt){alert('Paket etkinliği sona erdi!');return}let cost=count===1?100:900;if(gameState.coins<cost){alert('Yetersiz Coin!');return}gameState.coins-=cost;let container=document.getElementById('modalCardsContainer');container.innerHTML='';document.querySelector('#packModal h2').textContent='Çıkan Oyuncular:';let pool=packPools[type]||brazilPool,regular=pool.filter(p=>!p.special),rares=pool.filter(p=>p.special);for(let i=0;i<count;i++){let source;if(Math.random()<0.005){source=rares[Math.floor(Math.random()*rares.length)]}else{source=regular[Math.floor(Math.random()*regular.length)]}let p={id:'p_'+Math.random().toString(36).slice(2),name:source.name,ovr:source.special?source.ovr:65+Math.floor(Math.random()*26),pos:source.pos,level:1,special:!!source.special,pack:type};gameState.bench.push(p);gameState.questPackCount=(gameState.questPackCount||0)+1;if(!gameState.packCollections[type].includes(source.name))gameState.packCollections[type].push(source.name);let d=document.createElement('div');d.innerHTML=createCardHTML(p);container.appendChild(d)}updateCoins();renderPitch();renderCollections();renderQuests();document.getElementById('packModal').style.display='flex';saveGame()}function closePackModal(){document.getElementById('packModal').style.display='none'}
+function renderCollections(){renderOneCollection('brazilCollection',brazilPool,'brazil','🇧🇷 Brazil koleksiyonu');renderOneCollection('worldcupCollection',worldCupPool,'worldcup','🏆 Dünya Kupası koleksiyonu');renderOneCollection('legendsCollection',legendsPool,'legends','🌟 Efsaneler koleksiyonu');renderManagerCollection()}function renderOneCollection(elementId,pool,type,title){let el=document.getElementById(elementId);if(!el)return;let got=gameState.packCollections[type]||[],count=pool.filter(p=>got.includes(p.name)).length,remaining=pool.length-count;el.innerHTML='<b>'+title+'</b><p style="margin:5px 0;color:#ffd700">Toplanan: '+count+' / '+pool.length+' · Kalan: '+remaining+'</p><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;font-size:12px;max-height:300px;overflow:auto">'+pool.map(p=>{let owned=got.includes(p.name);return '<div style="padding:6px;border-radius:5px;background:'+(owned?'#777':'#252a32')+';color:'+(owned?'#ddd':'#fff')+';text-align:left;filter:'+(owned?'grayscale(1)':'none')+'">'+(owned?'✓ ':'🔒 ')+p.name+' <span style="color:#9da7b3">'+p.pos+'</span>'+(p.special?' <b style="color:#ffd700">'+p.ovr+'</b>':' <span style="color:#9da7b3">65–90</span>')+'</div>'}).join('')+'</div>'}
+const canvas=document.getElementById('snakeCanvas'),ctx=canvas.getContext('2d');let snake=[{x:10,y:10}],dx=1,dy=0,queue=[],apple={x:15,y:10},snakeTimer=null;function spawnApple(){do{apple={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)}}while(snake.some(p=>p.x===apple.x&&p.y===apple.y))}function updateSnake(){if(queue.length){let n=queue.shift();if(!(n.dx===-dx&&n.dy===-dy)){dx=n.dx;dy=n.dy}}let h={x:snake[0].x+dx,y:snake[0].y+dy};if(h.x<0||h.x>=20||h.y<0||h.y>=20||snake.some(p=>p.x===h.x&&p.y===h.y)){snake=[{x:10,y:10}];dx=1;dy=0;queue=[]}else if(h.x===apple.x&&h.y===apple.y){snake.unshift(h);gameState.totalApples++;gameState.coins+=5;spawnApple();updateCoins();renderPitch();renderQuests()}else{snake.unshift(h);snake.pop()}}function drawSnake(){ctx.fillStyle='#111';ctx.fillRect(0,0,300,300);ctx.fillStyle='#ff4757';ctx.fillRect(apple.x*15,apple.y*15,13,13);ctx.fillStyle='#00ff88';snake.forEach(p=>ctx.fillRect(p.x*15,p.y*15,13,13))}setInterval(()=>{if(document.getElementById('snakeGame').classList.contains('active'))updateSnake();drawSnake()},130);
+window.addEventListener('keydown',e=>{if(e.key==='ArrowUp')queue.push({dx:0,dy:-1});if(e.key==='ArrowDown')queue.push({dx:0,dy:1});if(e.key==='ArrowLeft')queue.push({dx:-1,dy:0});if(e.key==='ArrowRight')queue.push({dx:1,dy:0})});let touchStartX=0,touchStartY=0;canvas.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;e.preventDefault()},{passive:false});canvas.addEventListener('touchend',e=>{let x=e.changedTouches[0].clientX-touchStartX,y=e.changedTouches[0].clientY-touchStartY;if(Math.max(Math.abs(x),Math.abs(y))>15){if(Math.abs(x)>Math.abs(y))queue.push({dx:x>0?1:-1,dy:0});else queue.push({dx:0,dy:y>0?1:-1})}e.preventDefault()},{passive:false});
+function resetSquad(){if(!confirm('İlk 11 kadron boşaltılsın mı? Oyuncu kartların ve Coinlerin silinmez.'))return;Object.keys(gameState.squad).forEach(k=>gameState.squad[k]=null);renderPitch();saveGame();alert('Kadro sıfırlandı. Oyuncu kartların yedeklerde duruyor.')}
+async function apiRequest(path, options={}){
+  const response=await fetch(path,{...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data.error||'Sunucu hatası');
+  return data;
+}
+let challengeRefreshBusy=false;
+async function refreshOnlineChallenges(){
+  if(location.protocol==='file:'){
+    const c=document.getElementById('onlineCount');if(c)c.textContent='Sunucu gerekli';
+    const inbox=document.getElementById('incomingChallenges');if(inbox)inbox.textContent='Çevrim içi sayısı ve maç istekleri için oyunun yayınlanmış sunucudan açılması gerekir.';
+    return;
+  }
+  if(challengeRefreshBusy)return;challengeRefreshBusy=true;
+  try{
+    const playerId=getOrCreatePlayerId();
+    const presence=await apiRequest('/api/presence',{method:'POST',body:JSON.stringify({playerId})});
+    const count=document.getElementById('onlineCount');if(count)count.textContent=presence.count;
+    const mine=document.getElementById('challengeMyId');if(mine)mine.textContent=playerId;
+    const data=await apiRequest('/api/challenges?playerId='+encodeURIComponent(playerId));
+    const inbox=document.getElementById('incomingChallenges');
+    if(inbox){
+      if(!data.requests.length)inbox.textContent='Bekleyen maç isteği yok.';
+      else inbox.innerHTML=data.requests.map(r=>'<div style="padding:9px;margin:6px 0;background:#21262d;border-radius:6px">'+escapeChallengeText(r.fromPlayerId)+' sana maç isteği gönderdi.<br><button class="btn-buy" data-id="'+escapeChallengeText(r.id)+'" onclick="answerChallenge(this.dataset.id,true)">Kabul et</button> <button class="btn-buy" data-id="'+escapeChallengeText(r.id)+'" onclick="answerChallenge(this.dataset.id,false)">Reddet</button></div>').join('');
+    }
+  }catch(e){const count=document.getElementById('onlineCount');if(count)count.textContent='Bağlantı yok';const inbox=document.getElementById('incomingChallenges');if(inbox)inbox.textContent='Sunucuya ulaşılamadı. Sunucu kurulunca çalışır.'}
+  finally{challengeRefreshBusy=false}
+}
+function escapeChallengeText(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function sendChallengeRequest(){
+  const target=document.getElementById('challengeTargetId').value.trim().toUpperCase();
+  const playerId=getOrCreatePlayerId();const msg=document.getElementById('challengeMessage');
+  if(!/^EF-[A-Z0-9-]{4,20}$/.test(target)){msg.textContent='Geçerli bir Oyuncu ID gir.';return}
+  if(target===playerId){msg.textContent='Kendine maç isteği gönderemezsin.';return}
+  try{const result=await apiRequest('/api/challenges',{method:'POST',body:JSON.stringify({fromPlayerId:playerId,toPlayerId:target})});msg.textContent='Maç isteği gönderildi! İstek no: '+result.id;document.getElementById('challengeTargetId').value='';}
+  catch(e){msg.textContent='İstek gönderilemedi: '+e.message}
+}
+async function answerChallenge(id,accept){
+  try{await apiRequest('/api/challenges/'+encodeURIComponent(id)+'/answer',{method:'POST',body:JSON.stringify({playerId:getOrCreatePlayerId(),accept})});await refreshOnlineChallenges();}
+  catch(e){alert('İstek işlenemedi: '+e.message)}
+}
+if(location.protocol!=='file:'){refreshOnlineChallenges();setInterval(refreshOnlineChallenges,15000)}else{refreshOnlineChallenges()}
+async function createPurchaseRequest(){
+  const item=document.getElementById('purchaseItem').value;
+  const note=document.getElementById('playCode').value.trim();
+  if(!note){alert('Devam etmek için Google Play kodunu yaz.');document.getElementById('playCode').focus();return}
+  const playerId=getOrCreatePlayerId();
+  const parts=item.split('|');
+  const request={playerId,product:parts[0],price:parts[1],note};
+  try{
+    const result=await apiRequest('/api/requests',{method:'POST',body:JSON.stringify(request)});
+    document.getElementById('storePlayerId').textContent=playerId;
+    document.getElementById('purchaseMessage').textContent='Talep gönderildi: '+result.id+'. Yönetici onaylayınca ödül bu cihazdaki oyuna eklenecek.';
+    document.getElementById('playCode').value='';
+  }catch(e){alert('Talep sunucuya gönderilemedi: '+e.message+'. Oyun bir HTTPS sunucusunda yayınlanmalı.')}
+}
+async function openAdminPanel(){
+  if(!document.getElementById('adminPassword').value){alert('Yönetici şifresini gir.');return}
+  const panel=document.getElementById('adminPanel');panel.style.display='block';
+  await renderAdminPanel();
+}
+async function renderAdminPanel(){
+  const panel=document.getElementById('adminPanel');if(!panel)return;
+  const password=document.getElementById('adminPassword').value;
+  panel.innerHTML='<p>Sunucudaki talepler yükleniyor…</p>';
+  try{
+    const data=await apiRequest('/api/admin/requests',{headers:{'x-admin-password':password}});
+    const requests=data.requests||[];
+    if(!requests.length){panel.innerHTML='<p>Henüz talep yok.</p><button class="btn-buy" onclick="renderAdminPanel()">Talepleri yenile</button>';return}
+    panel.innerHTML='<button class="btn-buy" onclick="renderAdminPanel()">Talepleri yenile</button>'+requests.map(r=>{
+      const safeId=JSON.stringify(String(r.id)).replace(/"/g,'&quot;');
+      return '<div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px;margin:8px 0;text-align:left"><b>'+escapeHTML(r.product)+'</b> · '+escapeHTML(r.price)+'<p>Oyuncu ID: <b style="color:#ffd700">'+escapeHTML(r.playerId)+'</b></p><p>Talep: '+escapeHTML(r.id)+' · '+escapeHTML(r.createdAt)+'</p><p>Durum: '+escapeHTML(r.status)+'</p><p>Google Play kodu: <b style="overflow-wrap:anywhere">'+escapeHTML(r.note||'Yok')+'</b></p><button class="btn-buy" '+(r.status!=='Bekliyor'?'disabled':'')+' onclick="resolveServerRequest('+safeId+',true)">Ödeme geldi — kabul et ve ödülü gönder</button><button class="btn-buy" style="background:#c0392b" '+(r.status!=='Bekliyor'?'disabled':'')+' onclick="resolveServerRequest('+safeId+',false)">Reddet</button></div>';
+    }).join('');
+  }catch(e){panel.innerHTML='<p>Sunucuya erişilemedi: '+escapeHTML(e.message)+'. Sunucu kurulu ve yönetici şifresi doğru olmalı.</p><button class="btn-buy" onclick="renderAdminPanel()">Tekrar dene</button>'}
+}
+async function resolveServerRequest(id,accept){
+  const password=document.getElementById('adminPassword').value;
+  if(accept&&!confirm('Ödemenin gerçekten hesabına geçtiğini doğruladın mı? Onaylanınca seçtiği ödül oyuncunun oyununa gönderilecek.'))return;
+  try{
+    await apiRequest('/api/admin/requests/'+encodeURIComponent(id)+(accept?'/approve':'/reject'),{method:'POST',headers:{'x-admin-password':password},body:JSON.stringify({})});
+    alert(accept?'Talep kabul edildi. Ödül oyuncunun cihazındaki oyuna gönderildi. Oyuncu oyunu açınca ödül eklenecek.':'Talep reddedildi.');
+    await renderAdminPanel();
+  }catch(e){alert('İşlem yapılamadı: '+e.message)}
+}
+async function claimServerRewards(){
+  const playerId=getOrCreatePlayerId();
+  try{
+    const data=await apiRequest('/api/rewards/claim',{method:'POST',body:JSON.stringify({playerId})});
+    let changed=false;
+    for(const reward of (data.rewards||[])){
+      if(reward.product==='106 Oliver Kahn'){
+        if(!gameState.bench.some(p=>p.id===reward.rewardId)){
+          gameState.bench.push({id:reward.rewardId,name:'Oliver Kahn',pos:'KL',ovr:106,level:1,special:true});
+          changed=true;
+        }
+      }else{
+        const amount=Number((reward.product.match(/[\d,]+/)||['0'])[0].replace(',','.'));
+        if(amount>0&&reward.product.includes('Coin')){gameState.coins+=amount;changed=true}
+      }
+    }
+    if(changed){saveGame();updateCoins();renderPitch();renderCollections();alert('Yönetici tarafından onaylanan ödül oyununa eklendi!')}
+  }catch(e){/* Sunucu çevrimdışıysa oyun yerel çalışmaya devam eder. */}
+}
+function copyRequestInfo(id){alert('Talep bilgileri yönetici panelinde görüntülenir.')}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function updateCoins(){document.getElementById('coinCount').textContent=gameState.coins;document.getElementById('appleCount').textContent=gameState.totalApples;saveGame()}function claimDaily(){let now=Date.now(),day=16*60*60*1000;if(now-(gameState.dailyClaimAt||0)<day){alert('Günlük 1000 Coin ödülünü zaten aldın.');updateDailyButton();return}gameState.coins+=1000;gameState.dailyClaimAt=now;updateCoins();updateDailyButton();renderQuests();alert('Günlük ödül: +1000 Coin!')}function updateDailyButton(){let b=document.getElementById('dailyBtn'),s=document.getElementById('dailyStatus');if(!b)return;let left=16*60*60*1000-(Date.now()-(gameState.dailyClaimAt||0));if(left>0){b.disabled=true;b.textContent='Ödül alındı';s.textContent='Yeni ödül: '+formatCooldown(left)+' sonra'}else{b.disabled=false;b.textContent='1000 Coin Al';s.textContent='Günlük ödül hazır!'}}function resetHourlyQuests(){let now=Date.now();if(!gameState.questResetAt||now-gameState.questResetAt>=60*60*1000){gameState.questClaims=[];gameState.questResetAt=now;gameState.questPackCount=0;gameState.questSellCount=0;gameState.questManagerPackCount=0;gameState.questAppleStart=gameState.totalApples;gameState.questLeagueStart=gameState.leagueMatch;saveGame()} }function renderQuests(){resetHourlyQuests();let el=document.getElementById('questList');if(!el)return;let tasks=[{id:'daily',title:'Günlük ödülü al',desc:'Mağazadan günlük 1000 Coin al',done:(Date.now()-(gameState.dailyClaimAt||0)<16*60*60*1000)&&(gameState.dailyClaimAt||0)>0,reward:100},{id:'pack',title:'Paket aç',desc:'Herhangi bir oyuncu paketi aç',done:(gameState.questPackCount||0)>=1,reward:150},{id:'apple',title:'Elma topla',desc:'Yılan oyununda 10 elma topla',done:gameState.totalApples-(gameState.questAppleStart||0)>=10,reward:100},{id:'league',title:'Lig maçına katıl',desc:'En az bir lig maçı oyna',done:gameState.leagueMatch-(gameState.questLeagueStart||1)>=1,reward:200},{id:'sell',title:'Bir kart sat',desc:'Yedeklerden bir oyuncu kartı sat',done:(gameState.questSellCount||0)>=1,reward:100},{id:'manager',title:'Menajer bul',desc:'Menajer paketinden bir menajer çıkar',done:(gameState.questManagerPackCount||0)>=1,reward:150}];el.innerHTML=tasks.map(t=>{let claimed=(gameState.questClaims||[]).includes(t.id);return '<div class="pack-card"><b>'+(t.done?'✅ ':'🎯 ')+t.title+'</b><p style="margin:6px 0;color:#9da7b3;font-size:13px">'+t.desc+'</p><span style="color:#ffd700">Ödül: '+t.reward+' Coin</span><br><button class="btn-buy" '+(!t.done||claimed?'disabled style="opacity:.5"':'')+' onclick="claimQuest(\''+t.id+'\','+t.reward+')">'+(claimed?'Alındı':t.done?'Ödülü al':'Devam ediyor')+'</button></div>'}).join('')}function claimQuest(id,reward){if(!renderQuestReady(id))return;gameState.questClaims.push(id);gameState.coins+=reward;updateCoins();renderQuests();alert('Görev ödülü: +'+reward+' Coin')}function renderQuestReady(id){let states={daily:(Date.now()-(gameState.dailyClaimAt||0)<16*60*60*1000)&&(gameState.dailyClaimAt||0)>0,pack:(gameState.questPackCount||0)>=1,apple:gameState.totalApples-(gameState.questAppleStart||0)>=10,league:gameState.leagueMatch-(gameState.questLeagueStart||1)>=1,sell:(gameState.questSellCount||0)>=1,manager:(gameState.questManagerPackCount||0)>=1};return !!states[id]&&!gameState.questClaims.includes(id)}function playLeagueMatch(){let now=Date.now();if(now<(gameState.nextLeagueMatchAt||0)){alert('Yeni lig maçı için '+formatCooldown(gameState.nextLeagueMatchAt-now)+' beklemelisin.');return}let power=Number(document.getElementById('teamPower').textContent)||0;let chance=Math.max(.15,Math.min(.8,.35+(power-850)/1000));let roll=Math.random(),result,points,reward;if(roll<chance){result='MAÇI KAZANDIN!';points=3;reward=20}else if(roll<chance+.25){result='BERABERE!';points=1;reward=10}else{result='MAÇI KAYBETTİN.';points=0;reward=5}gameState.coins+=reward;gameState.leagueMatch++;renderQuests();gameState.leaguePoints+=points;gameState.nextLeagueMatchAt=now+20*60*1000;updateCoins();document.getElementById('leagueLog').textContent='Maç '+(gameState.leagueMatch-1)+': '+result+' Ödül: +'+reward+' Coin | Lig puanı: '+gameState.leaguePoints+'. Yeni maç 20 dakika sonra.';updateLeagueButton()}function formatCooldown(ms){let sec=Math.max(0,Math.ceil(ms/1000));return Math.floor(sec/60)+' dk '+String(sec%60).padStart(2,'0')+' sn'}function updateLeagueButton(){let btn=document.querySelector('#league button');if(!btn)return;let left=(gameState.nextLeagueMatchAt||0)-Date.now();if(left>0){btn.disabled=true;btn.style.opacity='.65';btn.textContent='Sonraki maç: '+formatCooldown(left)}else{btn.disabled=false;btn.style.opacity='1';btn.textContent='Lig Maçını Oyna'}}setInterval(()=>{resetHourlyQuests();renderQuests();updateLeagueButton()},1000);updateLeagueButton();function renderSellList(){let el=document.getElementById('sellList');el.innerHTML='';gameState.bench.forEach((p,i)=>{let b=document.createElement('button');b.className='btn-buy';b.textContent=p.name+' Sat (+20)';b.onclick=()=>{gameState.bench.splice(i,1);gameState.questSellCount=(gameState.questSellCount||0)+1;gameState.coins+=20;renderQuests();updateCoins();renderSellList();renderPitch()};el.appendChild(b)})}renderPitch();updateCoins();drawSnake();renderCollections();renderQuests();updateDailyButton();if(document.getElementById('storePlayerId'))document.getElementById('storePlayerId').textContent=getOrCreatePlayerId();setInterval(()=>{claimServerRewards();let t=document.getElementById('packTimer');if(t){let ms=Math.max(0,gameState.packExpiryAt-Date.now()),sec=Math.floor(ms/1000),d=Math.floor(sec/86400),h=Math.floor(sec%86400/3600),m=Math.floor(sec%3600/60),ss=sec%60;t.textContent=d+' gün '+h+' saat '+String(m).padStart(2,'0')+' dk '+String(ss).padStart(2,'0')+' sn';if(ms<=0)t.textContent='Etkinlik sona erdi'}updateDailyButton()},1000);
+</script></body></html>
